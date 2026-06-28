@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日のフロントライン</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #111;
+            color: #333;
+            padding: 2rem;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 1400px; /* 横に広がりすぎないための制限 */
+        }
+
+        #date-display {
+            /* 画面幅に応じて 1.5rem 〜 3rem の間で変動 */
+            font-size: clamp(1.5rem, 3vw, 3rem);
+            color: #999;
+            margin-bottom: 2vh;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        #message-display {
+            /* 画面幅に応じて 2.8rem 〜 7.5rem の間でダイナミックに巨大化 */
+            font-size: clamp(2.8rem, 7.5vw, 7.5rem);
+            font-weight: 900; /* 一番太いウエイト */
+            color: #fff;
+            line-height: 1.3;
+            /* カッコや文字が変なところで改行されるのを防ぐ */
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="date-display"></div>
+        <div id="message-display"></div>
+    </div>
+
+    <script>
+        // 1. 日替わりで表示するメッセージの配列（パッチ7.0対応 8日周期）
+        const messages = [
+            "シールロック（争奪戦）",
+            "フィールド・オブ・グローリー（砕氷戦）",
+            "オンサル・ハカイル（終節戦）",
+            "ウォーコー・チーテ（演習戦）",
+            "シールロック（争奪戦）",
+            "外縁遺跡群（制圧戦）",
+            "オンサル・ハカイル（終節戦）",
+            "ウォーコー・チーテ（演習戦）"
+        ];
+
+        // 2. 基準となる日付を設定
+        const baseDate = new Date(2026, 5, 27);
+
+        // 3. 今日の日付を取得
+        const today = new Date();
+
+        // 4. 「今日はYYYY年MM月DD日」のフォーマットを作成して表示
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1;
+        const date = today.getDate();
+        const dateString = `今日は ${year}年${month}月${date}日`;
+        document.getElementById('date-display').textContent = dateString;
+
+        // 5. 基準日からの経過日数を計算
+        const start = baseDate.getTime();
+        const current = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+        const diffDays = Math.floor((current - start) / (1000 * 60 * 60 * 24));
+
+        // 6. 配列長で割った余りをインデックスとして計算
+        const index = ((diffDays % messages.length) + messages.length) % messages.length;
+
+        // 7. メッセージを表示
+        document.getElementById('message-display').textContent = messages[index];
+    </script>
+
+</body>
+</html>
